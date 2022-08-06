@@ -27,6 +27,7 @@ export interface CheckAuthResponse {
 })
 export class AuthService {
   rootUrl = 'https://api.angular-email.com'
+  //null means we dont know the signin status, true / false handle the rest
   signedin$ = new BehaviorSubject(false)
   constructor(private http: HttpClient) { }
 
