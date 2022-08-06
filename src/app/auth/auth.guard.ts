@@ -17,12 +17,13 @@ export class AuthGuard implements CanLoad {
     segments: UrlSegment[]): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
     return this.authService.signedin$.pipe(
-      skipWhile(value => value === null),
+      skipWhile(value => value === null || value === false),
 
       //take marks Observable as complete, without this the Guard will not work
       take(1),
       //if the guard denies access, it is redirecting to the root route
       tap(isSignedIn => {
+        console.log('wfher', isSignedIn)
         if(!isSignedIn) {
           this.router.navigateByUrl('/')
         }
