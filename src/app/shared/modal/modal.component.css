@@ -1,0 +1,15 @@
+.actions:empty {
+  display: none;
+}
+
+.actions-default {
+  display: none;
+}
+
+.actions.empty + .actions-default {
+  display: block;
+}
+
+.ui.dimmer.visible.active {
+  position: fixed;
+}

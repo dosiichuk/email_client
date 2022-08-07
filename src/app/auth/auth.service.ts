@@ -13,6 +13,10 @@ export interface SigninCredentials {
   password: string;
 }
 
+export interface SigninResponse {
+  username: string;
+}
+
 export interface SignupResponse {
   username: string;
 }
@@ -29,6 +33,7 @@ export class AuthService {
   rootUrl = 'https://api.angular-email.com'
   //null means we dont know the signin status, true / false handle the rest
   signedin$ = new BehaviorSubject(false)
+  username: string = '';
   constructor(private http: HttpClient) { }
 
   usernameAvailable(username: string) {
@@ -40,15 +45,17 @@ export class AuthService {
   signup(credentials: SignupCredentials) {
     return this.http.post<SignupResponse>(this.rootUrl + '/auth/signup',
       //withCredentials makes sure that httpClient does not discard the cookies
-      credentials).pipe(tap(() => {
+      credentials).pipe(tap((response) => {
         this.signedin$.next(true)
+        this.username = response.username
       }))
   }
 
   signin(credentials: SigninCredentials) {
-    return this.http.post<any>(this.rootUrl + '/auth/signin', credentials)
-    .pipe(tap(() => {
+    return this.http.post<SigninResponse>(this.rootUrl + '/auth/signin', credentials)
+    .pipe(tap((response) => {
       this.signedin$.next(true)
+      this.username = response.username
     }))
   }
 
@@ -62,8 +69,9 @@ export class AuthService {
   checkAuth() {
     //adding withCredentials makes sure that outgoing requests contain cookies
     return this.http.get<CheckAuthResponse>(this.rootUrl + '/auth/signedin')
-      .pipe(tap(({ authenticated }) => {
+      .pipe(tap(({ authenticated, username }) => {
         this.signedin$.next(authenticated)
+        this.username = username
       }))
   }
 }
